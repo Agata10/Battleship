@@ -75,6 +75,10 @@ export class GameBoard {
     }
     return false;
   }
+
+  getMissedCoordinates() {
+    return this.missedCoordinated;
+  }
 }
 
 export class Player {
