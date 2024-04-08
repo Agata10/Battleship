@@ -51,14 +51,16 @@ export class GameBoard {
 
   isGameOver() {
     const count = 0;
-    this.ships.forEach((ship) => {
-      if (ship.isShipSunk() === true) {
+    this.ships.forEach((obj) => {
+      if (obj.ship.isShipSunk() === true) {
         count++;
       }
     });
     if (count === this.ships.length) {
       console.log("gameover");
+      return true;
     }
+    return false;
   }
 }
 
