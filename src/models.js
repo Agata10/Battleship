@@ -17,8 +17,10 @@ export class Ship {
 }
 
 export class GameBoard {
-  constructor() {
+  constructor(size) {
     this.ships = [];
+    this.missedCoordinated = [];
+    this.size = size;
   }
 
   createShip(length) {
@@ -33,16 +35,16 @@ export class GameBoard {
     //if ship is hit
     //send on correct ship hit()
     //record the coordinates of missed shot
-    const missedCoordinated = [];
     this.ships.forEach((s) => {
       if (s.x === x && s.y === y) {
         s.ship.hit();
       } else {
-        missedCoordinated.push({ x, y });
+        this.missedCoordinated.push({ x, y });
       }
     });
-    return missedCoordinated;
+    return this.missedCoordinated;
   }
+
   isGameOver() {
     const count = 0;
     this.ships.forEach((ship) => {
@@ -53,5 +55,23 @@ export class GameBoard {
     if (count === this.ships.length) {
       console.log("gameover");
     }
+  }
+}
+
+export class Player {
+  constructor(gameBoard) {
+    this.enemyGameBoard = enemyGameBoard;
+  }
+
+  attack(x, y) {
+    if (this.enemyGameBoard.receiveAttack(x, y)) {
+      console.log(`Hit the ${x} and ${y}`);
+    } else {
+      console.log(`Missed by hitting ${x} and ${y}`);
+    }
+  }
+
+  randomAttack() {
+    const x = Math.random;
   }
 }

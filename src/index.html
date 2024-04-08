@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -8,10 +8,17 @@
   <body>
     <header>
       <div id="content">
-        <div class="acitve chooseGame">
+        <div class="active chooseGame">
           <img src="../src/assets/ship.jpg" alt="" />
           <button id="singlePlayer">Single Player</button>
           <button id="twoPlayers">Two Players</button>
+        </div>
+        <div id="gameMode">
+          <div class="player1-side">
+            <div id="player1-board"></div>
+            <div id="player1-ships"></div>
+          </div>
+          <div id="player2-board"></div>
         </div>
       </div>
     </header>

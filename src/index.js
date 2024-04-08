@@ -3,6 +3,16 @@ import { Ship, GameBoard } from "./models";
 
 const singleMode = document.getElementById("singlePlayer");
 const doubleMode = document.getElementById("twoplayers");
+const chooseGameScreen = document.querySelector(".chooseGame");
+const gameMode = document.getElementById("gameMode");
+
+const playSingleMode = () => {
+  chooseGameScreen.classList.remove("active");
+  chooseGameScreen.classList.add("notActive");
+  gameMode.classList.add("active");
+};
+
+singleMode.addEventListener("click", playSingleMode);
 
 // const ship1 = new Ship(3);
 // console.log(ship1);
