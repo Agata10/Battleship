@@ -44,20 +44,28 @@ const playSingleMode = () => {
   let currentPlayer = player1;
   let isGameOver = false;
 
-  while (
-    checkWinner(
-      currentPlayer,
-      player1,
-      playerBoard,
-      player2,
-      compBoard,
-      isGameOver
-    )
-  ) {
-    player1BoardHolder.addEventListener((cell) => {
-      console.log(cell);
-    });
-  }
+  isGameOver = checkWinner(
+    currentPlayer,
+    player1,
+    playerBoard,
+    player2,
+    compBoard,
+    isGameOver
+  );
+
+  player2BoardHolder.addEventListener("click", (e) => {
+    if (currentPlayer === player1) {
+      const coordinates = e.target.id.slice(1, 3);
+      const x = coordinates[0];
+      const y = coordinates[1];
+      compBoard.receiveAttack(x, y);
+    }
+  });
+  //   player1BoardHolder.addEventListener("click", (e) => {
+  //     if(currentPlayer === player2) {
+
+  //     }
+  //   });
 };
 
 const checkWinner = (

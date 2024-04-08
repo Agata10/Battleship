@@ -40,10 +40,15 @@ export class GameBoard {
     //send on correct ship hit()
     //record the coordinates of missed shot
     this.ships.forEach((s) => {
-      if (s.x === x && s.y === y) {
-        s.ship.hit();
-      } else {
-        this.missedCoordinated.push({ x, y });
+      for (let i = s.start[0]; i <= s.end[0]; i++) {
+        for (let j = s.start[1]; j <= s.end[1]; j++) {
+          if (i == x && j == y) {
+            s.ship.hit();
+            console.log(s.ship.attacked);
+          } else {
+            this.missedCoordinated.push([x, y]);
+          }
+        }
       }
     });
     return this.missedCoordinated;
