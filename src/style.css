@@ -65,3 +65,7 @@ body {
 .cell {
     border: 1px solid black;
 }
+
+.taken {
+    background-color: blue;
+}

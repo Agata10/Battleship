@@ -27,8 +27,12 @@ export class GameBoard {
     return new Ship(length);
   }
 
-  placeShip(ship, x, y) {
-    return this.ships.push({ ship, x, y });
+  placeShip(ship, start, end) {
+    return this.ships.push({ ship, start, end });
+  }
+
+  getShips() {
+    return this.ships;
   }
 
   receiveAttack(x, y) {
@@ -59,7 +63,7 @@ export class GameBoard {
 }
 
 export class Player {
-  constructor(gameBoard) {
+  constructor(enemyGameBoard) {
     this.enemyGameBoard = enemyGameBoard;
   }
 
