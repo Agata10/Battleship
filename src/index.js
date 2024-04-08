@@ -12,11 +12,28 @@ chooseGameScreen.classList.remove("active");
 chooseGameScreen.classList.add("notActive");
 gameMode.classList.add("active");
 
+let currentPlayer;
+let isGameOver = false;
+let firstTimeClicked = false;
+
 const playSingleMode = () => {
   chooseGameScreen.classList.remove("active");
   chooseGameScreen.classList.add("notActive");
   gameMode.classList.add("active");
 
+  const [playerBoard, player1, compBoard, player2, currentPlayer] =
+    genereteGame();
+
+  console.log(playerBoard);
+
+  player2BoardHolder.addEventListener("click", handlePlayerTurn);
+  if (!firstTimeClicked) {
+    player1BoardHolder.classList.add("disabled");
+    player2BoardHolder.classList.remove("disabled");
+  }
+};
+
+const genereteGame = () => {
   const playerBoard = new GameBoard(10);
   createBoard(player1BoardHolder, playerBoard.size);
 
@@ -25,6 +42,7 @@ const playSingleMode = () => {
 
   const player1 = new Player(compBoard);
   const player2 = new Player(playerBoard);
+  currentPlayer = player1;
   //player1
   playerBoard.placeShip(playerBoard.createShip(5), [1, 2], [1, 6]);
   playerBoard.placeShip(playerBoard.createShip(4), [3, 1], [6, 1]);
@@ -41,8 +59,49 @@ const playSingleMode = () => {
   compBoard.placeShip(compBoard.createShip(3), [3, 4], [5, 4]);
   placeShips(compBoard, player2BoardHolder);
 
-  let currentPlayer = player1;
-  let isGameOver = false;
+  return [playerBoard, player1, compBoard, player2, currentPlayer];
+};
+
+const handleCompTurn = () => {
+  player1BoardHolder.classList.remove("disabled");
+  player2BoardHolder.classList.add("disabled");
+  const coordinates = playerBoard.randomAttack();
+  const x = coordinates[0];
+  const y = coordinates[1];
+
+  isGameOver = checkWinner(
+    currentPlayer,
+    player1,
+    playerBoard,
+    player2,
+    compBoard,
+    isGameOver
+  );
+  if (isGameOver) return;
+
+  const isHitted = playerBoard.receiveAttack(x, y);
+  const cell = player1BoardHolder.querySelector(`#_${x}${y}`);
+
+  if (isHitted) {
+    cell.textContent = " ";
+    cell.textContent = "X";
+    cell.style.color = "red";
+  } else {
+    cell.textContent = " ";
+    cell.textContent = "0";
+    cell.style.color = "green";
+  }
+
+  currentPlayer = changeTurn(currentPlayer, player1, player2);
+};
+
+const handlePlayerTurn = (e) => {
+  player1BoardHolder.classList.add("disabled");
+  player2BoardHolder.classList.remove("disabled");
+  const coordinates = e.target.id.slice(1, 3);
+  const x = coordinates[0];
+  const y = coordinates[1];
+  firstTimeClicked = true;
 
   isGameOver = checkWinner(
     currentPlayer,
@@ -53,37 +112,23 @@ const playSingleMode = () => {
     isGameOver
   );
 
-  const handlePlayerTurn = (e) => {
-    if (currentPlayer === player1) {
-      const coordinates = e.target.id.slice(1, 3);
-      const x = coordinates[0];
-      const y = coordinates[1];
-      const isHitted = compBoard.receiveAttack(x, y);
-      if (isHitted) {
-        e.target.textContent = " ";
-        e.target.textContent = "X";
-        e.target.style.color = "red";
-      }
-      isGameOver = checkWinner(
-        currentPlayer,
-        player1,
-        playerBoard,
-        player2,
-        compBoard,
-        isGameOver
-      );
-      if (isGameOver) return;
-    }
-  };
+  if (isGameOver) return;
+  const isHitted = compBoard.receiveAttack(x, y);
 
-  player2BoardHolder.addEventListener("click", handlePlayerTurn);
+  if (isHitted) {
+    e.target.textContent = " ";
+    e.target.textContent = "X";
+    e.target.style.color = "red";
+    console.log(e.target);
+  } else {
+    e.target.textContent = " ";
+    e.target.textContent = "0";
+    e.target.style.color = "black";
+  }
+
+  currentPlayer = changeTurn(currentPlayer, player1, player2);
+  setTimeout(handleCompTurn(), 15000);
 };
-//   player1BoardHolder.addEventListener("click", (e) => {
-//     if(currentPlayer === player2) {
-
-//     }
-//   });
-//};
 
 const checkWinner = (
   currentPlayer,
@@ -131,7 +176,7 @@ const placeShips = (board, divBoard) => {
   });
 };
 
-const changeTurn = (player1, player2) => {
+const changeTurn = (currentPlayer, player1, player2) => {
   return currentPlayer === player1 ? player2 : player1;
 };
 

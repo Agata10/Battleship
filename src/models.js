@@ -79,6 +79,13 @@ export class GameBoard {
   getMissedCoordinates() {
     return this.missedCoordinated;
   }
+
+  randomAttack() {
+    const x = Math.floor(Math.random() * this.size);
+    const y = Math.floor(Math.random() * this.size);
+
+    return [x, y];
+  }
 }
 
 export class Player {
