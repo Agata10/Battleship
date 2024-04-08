@@ -53,20 +53,40 @@ const playSingleMode = () => {
     isGameOver
   );
 
-  player2BoardHolder.addEventListener("click", (e) => {
+  const handlePlayerTurn = (e) => {
     if (currentPlayer === player1) {
       const coordinates = e.target.id.slice(1, 3);
       const x = coordinates[0];
       const y = coordinates[1];
-      compBoard.receiveAttack(x, y);
+      const isHitted = compBoard.receiveAttack(x, y);
+      console.log(isHitted);
+      if (isHitted) {
+        console.log(e.target);
+        e.target.textContent = " ";
+        e.target.textContent = "X";
+        e.target.style.color = "red";
+      }
+      isGameOver = checkWinner(
+        currentPlayer,
+        player1,
+        playerBoard,
+        player2,
+        compBoard,
+        isGameOver
+      );
+      if (isGameOver) {
+      }
     }
-  });
-  //   player1BoardHolder.addEventListener("click", (e) => {
-  //     if(currentPlayer === player2) {
+  };
 
-  //     }
-  //   });
+  player2BoardHolder.addEventListener("click", handlePlayerTurn);
 };
+//   player1BoardHolder.addEventListener("click", (e) => {
+//     if(currentPlayer === player2) {
+
+//     }
+//   });
+//};
 
 const checkWinner = (
   currentPlayer,
@@ -80,15 +100,14 @@ const checkWinner = (
     if (player1BoardHolder.isGameOver()) {
       console.log("player 1 lost!");
       isGameOver = true;
-      return isGameOver;
     }
   } else if (currentPlayer === player2) {
     if (player2BoardHolder.isGameOver()) {
       console.log("player 2 lost!");
       isGameOver = true;
-      return isGameOver;
     }
   }
+  return isGameOver;
 };
 
 const createBoard = (board, size) => {

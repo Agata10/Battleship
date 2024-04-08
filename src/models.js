@@ -39,25 +39,32 @@ export class GameBoard {
     //if ship is hit
     //send on correct ship hit()
     //record the coordinates of missed shot
+    let isAttacked = false;
     this.ships.forEach((s) => {
-      for (let i = s.start[0]; i <= s.end[0]; i++) {
+      outer: for (let i = s.start[0]; i <= s.end[0]; i++) {
         for (let j = s.start[1]; j <= s.end[1]; j++) {
           if (i == x && j == y) {
             s.ship.hit();
-            console.log(s.ship.attacked);
-          } else {
-            this.missedCoordinated.push([x, y]);
+            isAttacked = true;
+            break outer;
           }
         }
       }
+      if (isAttacked) return;
     });
-    return this.missedCoordinated;
+    if (!isAttacked) {
+      this.missedCoordinated.push([x, y]);
+    }
+    // console.log(this.missedCoordinated);
+
+    return isAttacked;
   }
 
   isGameOver() {
     const count = 0;
     this.ships.forEach((obj) => {
       if (obj.ship.isShipSunk() === true) {
+        console.log(obj.ship.isSunk);
         count++;
       }
     });
