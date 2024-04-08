@@ -59,9 +59,7 @@ const playSingleMode = () => {
       const x = coordinates[0];
       const y = coordinates[1];
       const isHitted = compBoard.receiveAttack(x, y);
-      console.log(isHitted);
       if (isHitted) {
-        console.log(e.target);
         e.target.textContent = " ";
         e.target.textContent = "X";
         e.target.style.color = "red";
@@ -74,8 +72,7 @@ const playSingleMode = () => {
         compBoard,
         isGameOver
       );
-      if (isGameOver) {
-      }
+      if (isGameOver) return;
     }
   };
 
@@ -97,13 +94,13 @@ const checkWinner = (
   isGameOver
 ) => {
   if (currentPlayer === player1) {
-    if (player1BoardHolder.isGameOver()) {
-      console.log("player 1 lost!");
+    if (player2BoardHolder.isGameOver()) {
+      console.log("player 2 lost!");
       isGameOver = true;
     }
   } else if (currentPlayer === player2) {
-    if (player2BoardHolder.isGameOver()) {
-      console.log("player 2 lost!");
+    if (player1BoardHolder.isGameOver()) {
+      console.log("player 1 lost!");
       isGameOver = true;
     }
   }

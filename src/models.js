@@ -45,6 +45,7 @@ export class GameBoard {
         for (let j = s.start[1]; j <= s.end[1]; j++) {
           if (i == x && j == y) {
             s.ship.hit();
+            s.ship.isShipSunk();
             isAttacked = true;
             break outer;
           }
@@ -61,9 +62,9 @@ export class GameBoard {
   }
 
   isGameOver() {
-    const count = 0;
+    let count = 0;
     this.ships.forEach((obj) => {
-      if (obj.ship.isShipSunk() === true) {
+      if (obj.ship.isSunk === true) {
         console.log(obj.ship.isSunk);
         count++;
       }
