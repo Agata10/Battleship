@@ -5,42 +5,34 @@ const singleMode = document.getElementById("singlePlayer");
 const doubleMode = document.getElementById("twoplayers");
 const chooseGameScreen = document.querySelector(".chooseGame");
 const gameMode = document.getElementById("gameMode");
+const player1Board = document.getElementById("player1-board");
+const player2Board = document.getElementById("player2-board");
+
+chooseGameScreen.classList.remove("active");
+chooseGameScreen.classList.add("notActive");
+gameMode.classList.add("active");
 
 const playSingleMode = () => {
   chooseGameScreen.classList.remove("active");
   chooseGameScreen.classList.add("notActive");
   gameMode.classList.add("active");
+
+  const playerBoard = new GameBoard(10);
+  createBoard(player1Board, playerBoard.size);
+
+  const compBoard = new GameBoard(10);
+  createBoard(player2Board, compBoard.size);
 };
 
-singleMode.addEventListener("click", playSingleMode);
+const createBoard = (board, size) => {
+  for (let i = 0; i < size * size; i++) {
+    const div = document.createElement("div");
+    div.id = i;
+    div.classList.add("cell");
+    board.append(div);
+  }
+};
 
-// const ship1 = new Ship(3);
-// console.log(ship1);
-// ship1.hit();
-// console.log(ship1);
-// ship1.isShipSunk();
-// console.log(ship1.isSunk);
-// console.log("two");
-// ship1.hit();
-// console.log(ship1);
-// ship1.isShipSunk();
-// console.log(ship1.isSunk);
-// console.log("three");
-// ship1.hit();
-// console.log(ship1);
-// ship1.isShipSunk();
-// console.log(ship1.isSunk);
+playSingleMode();
 
-// const gameBoard = new GameBoard();
-// const ship = gameBoard.createShip(3);
-// gameBoard.placeShip(ship, 1, 2);
-// console.log(gameBoard.ships);
-// let coorOfAttack = gameBoard.receiveAttack(0, 1);
-// console.log(coorOfAttack);
-// console.log(ship.attacked);
-// coorOfAttack = gameBoard.receiveAttack(1, 2);
-// console.log(coorOfAttack);
-// console.log(ship.attacked);
-// gameBoard.receiveAttack(1, 2);
-// gameBoard.receiveAttack(1, 2);
-// console.log(ship.isShipSunk());
+//singleMode.addEventListener("click", playSingleMode);

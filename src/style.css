@@ -39,4 +39,29 @@ body {
     height: 40px;
 }
 
-.gameMode {}
+
+/* GAME */
+
+#gameMode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    background-color: grey;
+    width: 100vw;
+    height: 100vh;
+}
+
+#player1-board,
+#player2-board {
+    border: 1px solid black;
+    width: 400px;
+    height: 400px;
+    display: grid;
+    grid-template-columns: repeat(10, auto);
+    grid-template-rows: repeat(10, auto);
+}
+
+.cell {
+    border: 1px solid black;
+}
