@@ -21,13 +21,80 @@ const playSingleMode = () => {
   chooseGameScreen.classList.add("notActive");
   gameMode.classList.add("active");
 
-  const [playerBoard, player1, compBoard, player2, currentPlayer] =
-    genereteGame();
+  const [playerBoard, player1, compBoard, player2] = genereteGame();
 
-  console.log(playerBoard);
+  const handleCompTurn = () => {
+    if (isGameOver) return;
+    player2BoardHolder.removeEventListener("click", handlePlayerTurn);
+    player1BoardHolder.classList.remove("disabled");
+    player2BoardHolder.classList.add("disabled");
+    const coordinates = playerBoard.randomAttack();
+    const x = coordinates[0];
+    const y = coordinates[1];
+    isGameOver = checkWinner(
+      currentPlayer,
+      player1,
+      playerBoard,
+      player2,
+      compBoard,
+      isGameOver
+    );
+
+    const isHitted = playerBoard.receiveAttack(x, y);
+    const cell = player1BoardHolder.querySelector(`#_${x}${y}`);
+
+    if (isHitted) {
+      cell.textContent = " ";
+      cell.textContent = "X";
+      cell.style.color = "red";
+    } else {
+      cell.textContent = " ";
+      cell.textContent = "0";
+      cell.style.color = "green";
+    }
+
+    currentPlayer = changeTurn(currentPlayer, player1, player2);
+    setTimeout(() => {
+      player1BoardHolder.classList.add("disabled");
+      player2BoardHolder.classList.remove("disabled");
+      player2BoardHolder.addEventListener("click", handlePlayerTurn);
+    }, 500);
+  };
+
+  const handlePlayerTurn = (e) => {
+    if (isGameOver) return;
+    const coordinates = e.target.id.slice(1, 3);
+    const x = coordinates[0];
+    const y = coordinates[1];
+    firstTimeClicked = true;
+    isGameOver = checkWinner(
+      currentPlayer,
+      player1,
+      playerBoard,
+      player2,
+      compBoard,
+      isGameOver
+    );
+
+    const isHitted = compBoard.receiveAttack(x, y);
+
+    if (isHitted) {
+      e.target.textContent = " ";
+      e.target.textContent = "X";
+      e.target.style.color = "red";
+      console.log(e.target);
+    } else {
+      e.target.textContent = " ";
+      e.target.textContent = "0";
+      e.target.style.color = "black";
+    }
+    currentPlayer = changeTurn(currentPlayer, player1, player2);
+    setTimeout(handleCompTurn(), 2000);
+  };
 
   player2BoardHolder.addEventListener("click", handlePlayerTurn);
   if (!firstTimeClicked) {
+    console.log(firstTimeClicked);
     player1BoardHolder.classList.add("disabled");
     player2BoardHolder.classList.remove("disabled");
   }
@@ -59,75 +126,7 @@ const genereteGame = () => {
   compBoard.placeShip(compBoard.createShip(3), [3, 4], [5, 4]);
   placeShips(compBoard, player2BoardHolder);
 
-  return [playerBoard, player1, compBoard, player2, currentPlayer];
-};
-
-const handleCompTurn = () => {
-  player1BoardHolder.classList.remove("disabled");
-  player2BoardHolder.classList.add("disabled");
-  const coordinates = playerBoard.randomAttack();
-  const x = coordinates[0];
-  const y = coordinates[1];
-
-  isGameOver = checkWinner(
-    currentPlayer,
-    player1,
-    playerBoard,
-    player2,
-    compBoard,
-    isGameOver
-  );
-  if (isGameOver) return;
-
-  const isHitted = playerBoard.receiveAttack(x, y);
-  const cell = player1BoardHolder.querySelector(`#_${x}${y}`);
-
-  if (isHitted) {
-    cell.textContent = " ";
-    cell.textContent = "X";
-    cell.style.color = "red";
-  } else {
-    cell.textContent = " ";
-    cell.textContent = "0";
-    cell.style.color = "green";
-  }
-
-  currentPlayer = changeTurn(currentPlayer, player1, player2);
-};
-
-const handlePlayerTurn = (e) => {
-  player1BoardHolder.classList.add("disabled");
-  player2BoardHolder.classList.remove("disabled");
-  const coordinates = e.target.id.slice(1, 3);
-  const x = coordinates[0];
-  const y = coordinates[1];
-  firstTimeClicked = true;
-
-  isGameOver = checkWinner(
-    currentPlayer,
-    player1,
-    playerBoard,
-    player2,
-    compBoard,
-    isGameOver
-  );
-
-  if (isGameOver) return;
-  const isHitted = compBoard.receiveAttack(x, y);
-
-  if (isHitted) {
-    e.target.textContent = " ";
-    e.target.textContent = "X";
-    e.target.style.color = "red";
-    console.log(e.target);
-  } else {
-    e.target.textContent = " ";
-    e.target.textContent = "0";
-    e.target.style.color = "black";
-  }
-
-  currentPlayer = changeTurn(currentPlayer, player1, player2);
-  setTimeout(handleCompTurn(), 15000);
+  return [playerBoard, player1, compBoard, player2];
 };
 
 const checkWinner = (
@@ -138,17 +137,16 @@ const checkWinner = (
   player2BoardHolder,
   isGameOver
 ) => {
-  if (currentPlayer === player1) {
-    if (player2BoardHolder.isGameOver()) {
-      console.log("player 2 lost!");
-      isGameOver = true;
-    }
-  } else if (currentPlayer === player2) {
-    if (player1BoardHolder.isGameOver()) {
-      console.log("player 1 lost!");
-      isGameOver = true;
-    }
+  if (player2BoardHolder.isGameOver()) {
+    console.log("player 2 lost!");
+    isGameOver = true;
   }
+  currentPlayer === player2;
+  if (player1BoardHolder.isGameOver()) {
+    console.log("player 1 lost!");
+    isGameOver = true;
+  }
+
   return isGameOver;
 };
 
