@@ -31,14 +31,7 @@ const playSingleMode = () => {
     const coordinates = playerBoard.randomAttack();
     const x = coordinates[0];
     const y = coordinates[1];
-    isGameOver = checkWinner(
-      currentPlayer,
-      player1,
-      playerBoard,
-      player2,
-      compBoard,
-      isGameOver
-    );
+    isGameOver = checkWinner(playerBoard, compBoard, isGameOver);
 
     const isHitted = playerBoard.receiveAttack(x, y);
     const cell = player1BoardHolder.querySelector(`#_${x}${y}`);
@@ -67,14 +60,7 @@ const playSingleMode = () => {
     const x = coordinates[0];
     const y = coordinates[1];
     firstTimeClicked = true;
-    isGameOver = checkWinner(
-      currentPlayer,
-      player1,
-      playerBoard,
-      player2,
-      compBoard,
-      isGameOver
-    );
+    isGameOver = checkWinner(playerBoard, compBoard, isGameOver);
 
     const isHitted = compBoard.receiveAttack(x, y);
 
@@ -82,7 +68,6 @@ const playSingleMode = () => {
       e.target.textContent = " ";
       e.target.textContent = "X";
       e.target.style.color = "red";
-      console.log(e.target);
     } else {
       e.target.textContent = " ";
       e.target.textContent = "0";
@@ -93,11 +78,10 @@ const playSingleMode = () => {
   };
 
   player2BoardHolder.addEventListener("click", handlePlayerTurn);
-  if (!firstTimeClicked) {
-    console.log(firstTimeClicked);
-    player1BoardHolder.classList.add("disabled");
-    player2BoardHolder.classList.remove("disabled");
-  }
+  //if (!firstTimeClicked) {
+  player1BoardHolder.classList.add("disabled");
+  player2BoardHolder.classList.remove("disabled");
+  //}
 };
 
 const genereteGame = () => {
@@ -129,19 +113,11 @@ const genereteGame = () => {
   return [playerBoard, player1, compBoard, player2];
 };
 
-const checkWinner = (
-  currentPlayer,
-  player1,
-  player1BoardHolder,
-  player2,
-  player2BoardHolder,
-  isGameOver
-) => {
+const checkWinner = (player1BoardHolder, player2BoardHolder, isGameOver) => {
   if (player2BoardHolder.isGameOver()) {
     console.log("player 2 lost!");
     isGameOver = true;
   }
-  currentPlayer === player2;
   if (player1BoardHolder.isGameOver()) {
     console.log("player 1 lost!");
     isGameOver = true;
