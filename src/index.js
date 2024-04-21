@@ -113,19 +113,6 @@ import { Ship, GameBoard, Player } from "./models";
 //   return [playerBoard, player1, compBoard, player2];
 // };
 
-// const checkWinner = (player1BoardHolder, player2BoardHolder, isGameOver) => {
-//   if (player2BoardHolder.isGameOver()) {
-//     console.log("player 2 lost!");
-//     isGameOver = true;
-//   }
-//   if (player1BoardHolder.isGameOver()) {
-//     console.log("player 1 lost!");
-//     isGameOver = true;
-//   }
-
-//   return isGameOver;
-// };
-
 // const changeTurn = (currentPlayer, player1, player2) => {
 //   return currentPlayer === player1 ? player2 : player1;
 // };
@@ -154,7 +141,6 @@ const createBoard = (board, size) => {
 const placeShips = (board, divBoard) => {
   const ships = board.getShips();
   ships.forEach((ship) => {
-    console.log(ship);
     for (let i = ship.start[0]; i <= ship.end[0]; i++) {
       for (let j = ship.start[1]; j <= ship.end[1]; j++) {
         const cell = divBoard.querySelector(`#_${i}${j}`);
@@ -164,16 +150,7 @@ const placeShips = (board, divBoard) => {
   });
 };
 
-const generateGame = () => {
-  const playerBoard = new GameBoard(10);
-  createBoard(playerBoardHolder, playerBoard.size);
-
-  const compBoard = new GameBoard(10);
-  createBoard(computerBoardHolder, compBoard.size);
-
-  const player = new Player(compBoard);
-  const compPlayer = new Player(playerBoard);
-
+const createShips = (playerBoard, compBoard) => {
   //player1
   playerBoard.addShip(playerBoard.createShip(5, [1, 2], [1, 6]));
   playerBoard.addShip(playerBoard.createShip(4, [3, 1], [6, 1]));
@@ -189,20 +166,95 @@ const generateGame = () => {
   compBoard.addShip(compBoard.createShip(3, [3, 6], [3, 8]));
   compBoard.addShip(compBoard.createShip(3, [3, 4], [5, 4]));
   placeShips(compBoard, computerBoardHolder);
+};
+
+const generateGame = () => {
+  const playerBoard = new GameBoard(10);
+  createBoard(playerBoardHolder, playerBoard.size);
+
+  const compBoard = new GameBoard(10);
+  createBoard(computerBoardHolder, compBoard.size);
+
+  const player = new Player(compBoard);
+  const compPlayer = new Player(playerBoard);
+
+  createShips(playerBoard, compBoard);
 
   return [player, playerBoard, compPlayer, compBoard];
 };
 
-const createShips = () => {};
+const checkWinner = (playerBoard, compBoard) => {
+  let isGameOver = false;
+  if (compBoard.isGameOver()) {
+    console.log("Computer lost!");
+    isGameOver = true;
+  }
+  if (playerBoard.isGameOver()) {
+    console.log("Player lost!");
+    isGameOver = true;
+  }
+
+  return isGameOver;
+};
 
 const singleModeGame = () => {
   chooseGameScreen.classList.remove("active");
   chooseGameScreen.classList.add("notActive");
   gameScreen.classList.add("active");
+  const [player, playerBoard, compPlayer, compBoard] = generateGame();
+  let currentPlayer = player;
+  let start = true;
+
+  const handleComputerTurn = () => {
+    computerBoardHolder.classList.add("disabled");
+    playerBoardHolder.classList.remove("disabled");
+    playerBoardHolder.removeEventListener("click", handlePlayerTurn);
+    const coordinates = playerBoard.randomAttack();
+    const x = coordinates[0];
+    const y = coordinates[1];
+    //compPlayer.attack(x, y);
+    const cell = playerBoardHolder.querySelector(`#_${x}${y}`);
+    const isAttacked = playerBoard.receiveAttack(x, y);
+    cell.textContent = "";
+    if (isAttacked) {
+      cell.classList.add("attacked");
+    } else {
+      cell.classList.add("not-attacked");
+    }
+    if (checkWinner(playerBoard, compBoard)) return;
+    currentPlayer = player;
+    setTimeout(() => {
+      playerBoardHolder.classList.add("disabled");
+      computerBoardHolder.classList.remove("disabled");
+      playerBoardHolder.addEventListener("click", handlePlayerTurn);
+    }, 0);
+  };
+
+  const handlePlayerTurn = (e) => {
+    if (checkWinner(playerBoard, compBoard)) return;
+    const coordinates = e.target.id.slice(1, 3);
+    const x = coordinates[0];
+    const y = coordinates[1];
+    start = false;
+    //player.attack(x, y);
+    const isAttacked = compBoard.receiveAttack(x, y);
+    //delete it later when appended ships:
+    e.target.textContent = "";
+    if (isAttacked) {
+      e.target.classList.add("attacked");
+    } else {
+      e.target.classList.add("not-attacked");
+    }
+    currentPlayer = compPlayer;
+    setTimeout(handleComputerTurn(), 300);
+  };
+
+  if (start) {
+    playerBoardHolder.classList.add("disabled");
+    computerBoardHolder.classList.remove("disabled");
+  }
+  computerBoardHolder.addEventListener("click", handlePlayerTurn);
 };
 
-chooseGameScreen.classList.remove("active");
-chooseGameScreen.classList.add("notActive");
-gameScreen.classList.add("active");
-const [player, playerBoard, compPlayer, compBoard] = generateGame();
+singleModeGame();
 //singleModeBtn.addEventListener("click", singleModeGame);

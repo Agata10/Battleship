@@ -76,6 +76,17 @@ body {
     background-color: blue;
 }
 
+.attacked::before {
+    content: "X";
+    color: red;
+}
+
+.not-attacked::before {
+    content: "•";
+    font-size: 2rem;
+    color: black;
+}
+
 .disabled {
     opacity: 0.3;
     cursor: default !important;

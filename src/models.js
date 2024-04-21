@@ -23,7 +23,8 @@ export class Ship {
 export class GameBoard {
   constructor(size) {
     this.ships = [];
-    this.missedCoordinated = [];
+    this.missedCoordinates = [];
+    this.hitCoordinates = [];
     this.size = size;
   }
 
@@ -48,17 +49,21 @@ export class GameBoard {
       outer: for (let i = s.start[0]; i <= s.end[0]; i++) {
         for (let j = s.start[1]; j <= s.end[1]; j++) {
           if (i == x && j == y) {
-            s.ship.hit();
-            s.ship.isShipSunk();
+            s.hit();
+            s.isShipSunk();
             isAttacked = true;
             break outer;
           }
         }
       }
-      if (isAttacked) return;
+      if (isAttacked) {
+        this.hitCoordinates.push([x, y]);
+        return;
+      }
     });
+    console.log(isAttacked + " was attacked");
     if (!isAttacked) {
-      this.missedCoordinated.push([x, y]);
+      this.missedCoordinates.push([x, y]);
     }
     // console.log(this.missedCoordinated);
 
@@ -67,9 +72,9 @@ export class GameBoard {
 
   isGameOver() {
     let count = 0;
-    this.ships.forEach((obj) => {
-      if (obj.ship.isSunk === true) {
-        console.log(obj.ship.isSunk);
+    this.ships.forEach((ship) => {
+      if (ship.isSunk === true) {
+        console.log(ship.isSunk);
         count++;
       }
     });
@@ -81,21 +86,27 @@ export class GameBoard {
   }
 
   getMissedCoordinates() {
-    return this.missedCoordinated;
+    return this.missedCoordinates;
+  }
+
+  getHitCoordinates() {
+    return this.hitCoordinates;
   }
 
   randomAttack() {
-    let x = Math.floor(Math.random() * this.size);
-    let y = Math.floor(Math.random() * this.size);
+    let x;
+    let y;
     const allMissedCoord = this.getMissedCoordinates();
-    allMissedCoord.forEach((coord) => {
-      if (coord.x === x && coord.y === y) {
-        console.log(`Cant hit again at ${x} and ${y}`);
-        x = Math.floor(Math.random() * this.size);
-        y = Math.floor(Math.random() * this.size);
-      }
-    });
-    console.log(`Hit at ${x} and ${y}`);
+    const allHitCoord = this.getHitCoordinates();
+    const allCoords = [...allMissedCoord, ...allHitCoord];
+    console.log(allMissedCoord);
+    console.log(allHitCoord);
+    do {
+      x = Math.floor(Math.random() * this.size);
+      y = Math.floor(Math.random() * this.size);
+      console.log("Can\t hit at " + x + y);
+    } while (allCoords.some((coord) => coord[0] === x && coord[1] === y));
+    console.log(`Computer hit at x: ${x} and y: ${y}`);
     return [x, y];
   }
 }
@@ -107,9 +118,9 @@ export class Player {
 
   attack(x, y) {
     if (this.enemyGameBoard.receiveAttack(x, y)) {
-      console.log(`Hit the ${x} and ${y}`);
+      console.log(`Hit the x:${x} and y:${y}`);
     } else {
-      console.log(`Missed by hitting ${x} and ${y}`);
+      console.log(`Missed by hitting x:${x} and y:${y}`);
     }
   }
 }
