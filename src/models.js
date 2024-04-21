@@ -1,6 +1,10 @@
 export class Ship {
-  constructor(length) {
-    (this.length = length), (this.attacked = 0), (this.isSunk = false);
+  constructor(length, start, end) {
+    this.length = length;
+    this.attacked = 0;
+    this.isSunk = false;
+    this.start = start;
+    this.end = end;
   }
 
   hit() {
@@ -23,12 +27,12 @@ export class GameBoard {
     this.size = size;
   }
 
-  createShip(length) {
-    return new Ship(length);
+  createShip(length, start, end) {
+    return new Ship(length, start, end);
   }
 
-  placeShip(ship, start, end) {
-    return this.ships.push({ ship, start, end });
+  addShip(ship) {
+    return this.ships.push(ship);
   }
 
   getShips() {
@@ -81,9 +85,17 @@ export class GameBoard {
   }
 
   randomAttack() {
-    const x = Math.floor(Math.random() * this.size);
-    const y = Math.floor(Math.random() * this.size);
-
+    let x = Math.floor(Math.random() * this.size);
+    let y = Math.floor(Math.random() * this.size);
+    const allMissedCoord = this.getMissedCoordinates();
+    allMissedCoord.forEach((coord) => {
+      if (coord.x === x && coord.y === y) {
+        console.log(`Cant hit again at ${x} and ${y}`);
+        x = Math.floor(Math.random() * this.size);
+        y = Math.floor(Math.random() * this.size);
+      }
+    });
+    console.log(`Hit at ${x} and ${y}`);
     return [x, y];
   }
 }
@@ -99,9 +111,5 @@ export class Player {
     } else {
       console.log(`Missed by hitting ${x} and ${y}`);
     }
-  }
-
-  randomAttack() {
-    const x = Math.random;
   }
 }
