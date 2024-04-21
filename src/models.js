@@ -57,13 +57,14 @@ export class GameBoard {
         }
       }
       if (isAttacked) {
-        this.hitCoordinates.push([x, y]);
         return;
       }
     });
-    console.log(isAttacked + " was attacked");
+    //console.log(isAttacked + " was attacked");
     if (!isAttacked) {
       this.missedCoordinates.push([x, y]);
+    } else {
+      this.hitCoordinates.push([x, y]);
     }
     // console.log(this.missedCoordinated);
 
@@ -74,7 +75,7 @@ export class GameBoard {
     let count = 0;
     this.ships.forEach((ship) => {
       if (ship.isSunk === true) {
-        console.log(ship.isSunk);
+        // console.log(ship.isSunk);
         count++;
       }
     });
@@ -99,14 +100,12 @@ export class GameBoard {
     const allMissedCoord = this.getMissedCoordinates();
     const allHitCoord = this.getHitCoordinates();
     const allCoords = [...allMissedCoord, ...allHitCoord];
-    console.log(allMissedCoord);
-    console.log(allHitCoord);
     do {
       x = Math.floor(Math.random() * this.size);
       y = Math.floor(Math.random() * this.size);
-      console.log("Can\t hit at " + x + y);
-    } while (allCoords.some((coord) => coord[0] === x && coord[1] === y));
-    console.log(`Computer hit at x: ${x} and y: ${y}`);
+      //console.log("Can\t hit at " + x + y);
+    } while (allCoords.find((coord) => coord[0] === x && coord[1] === y));
+    // console.log(`Computer hit at x: ${x} and y: ${y}`);
     return [x, y];
   }
 }

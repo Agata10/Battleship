@@ -213,6 +213,8 @@ const singleModeGame = () => {
     const x = coordinates[0];
     const y = coordinates[1];
     //compPlayer.attack(x, y);
+    console.log(playerBoard.getHitCoordinates());
+    console.log(playerBoard.getMissedCoordinates());
     const cell = playerBoardHolder.querySelector(`#_${x}${y}`);
     const isAttacked = playerBoard.receiveAttack(x, y);
     cell.textContent = "";
@@ -236,6 +238,8 @@ const singleModeGame = () => {
     const x = coordinates[0];
     const y = coordinates[1];
     start = false;
+    // console.log(compBoard.getHitCoordinates());
+    // console.log(compBoard.getMissedCoordinates());
     //player.attack(x, y);
     const isAttacked = compBoard.receiveAttack(x, y);
     //delete it later when appended ships:
